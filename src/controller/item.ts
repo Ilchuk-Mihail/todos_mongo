@@ -1,19 +1,15 @@
 import { Request, Response, NextFunction } from 'express'
-import {Item} from '../model/item'
-import mongoose from "mongoose";
+import TaskModel, { Task } from '../model/task'
 
 export default {
-    async createItem(req: Request, res: Response, next: NextFunction): Promise<void> {
-        try {
-            const {title, description, importance} = req.body
-            const newItem = Item.create({
-                    _id: new mongoose.Types.ObjectId(),
-                    title,
-                    description,
-                    importance
-                }
-            )
-            res.status(201).json(newItem)
+  async createItem (req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+    const { title, description, importance } = req.body
+    const newTask: Task = await TaskModel.create({
+      title,
+      description
+    })
+      res.status(201).json(newTask)
         } catch(err) {
             next(err)//create middleware - handle error functions)
         }
