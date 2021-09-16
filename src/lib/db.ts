@@ -1,9 +1,7 @@
 import mongoose from 'mongoose'
-import nconf from 'nconf'
+import config from '../config/index'
 
-nconf.file({ file: 'config.json' })
-
-const uri = nconf.get('MONGO_URI')
+const uri = config.get('MONGO_URI')
 
 export default {
   async connection (): Promise<void> {

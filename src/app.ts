@@ -1,11 +1,10 @@
 import express, { Application } from 'express'
 import itemsRouter from './routes'
-import nconf from 'nconf'
 import db from './lib/db'
-nconf.file({ file: 'config.json' })
+import config from './config'
 
 const app: Application = express()
-const port = nconf.get('PORT')
+const port = config.get('PORT')
 
 db.connection().catch(err => err)
 
