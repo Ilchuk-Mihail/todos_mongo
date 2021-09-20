@@ -19,7 +19,7 @@ export default {
 
   async getAllTasks (req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const tasks: Task[] = await TaskModel.find()
+      const tasks: Task[] = await TaskModel.find().lean()
       res.status(200).send({
         results: tasks.length,
         tasks
@@ -29,18 +29,25 @@ export default {
     }
   },
 
-  async getTaskById (req: Request, res: Response, next: NextFunction): Promise<void> {
+  async getTaskById (req: Request, res: Response, next: NextFunction): Promise<void | Response> {
     try {
-      const task: Task | null = await TaskModel.findById(req.params.id)
+      const task: Task | null = await TaskModel.findById(req.params.id).lean()
+      if (!task) {
+        return res.status(404).send({ message: 'task not found' })
+      }
       res.status(200).send(task)
     } catch (err) {
       next(err)
     }
   },
 
-  async updateTask (req: Request, res: Response, next: NextFunction): Promise<void> {
+  async updateTask (req: Request, res: Response, next: NextFunction): Promise<void | Response> {
     try {
       const { title, description } = req.body
+      const task: Task | null = await TaskModel.findById(req.params.id).lean()
+      if (!task) {
+        return res.status(404).send({ message: 'task not found' })
+      }
       const updatedTask: Task = await TaskModel.findOneAndUpdate(
         { _id: req.params.id },
         { title: title, description: description },
@@ -51,23 +58,31 @@ export default {
     }
   },
 
-  async updateTaskStatusAndImportance (req: Request, res: Response, next: NextFunction): Promise<void> {
+  async updateTaskStatusAndImportance (req: Request, res: Response, next: NextFunction): Promise<void | Response> {
     try {
       const { status, importance } = req.body
+      const task: Task | null = await TaskModel.findById(req.params.id).lean()
+      if (!task) {
+        return res.status(404).send({ message: 'task not found' })
+      }
       const updatedTask: Task = await TaskModel.findOneAndUpdate(
         { _id: req.params.id },
         { status: status, importance: importance },
-        { new: true })
+        { new: true }).lean()
       res.status(200).send(updatedTask)
     } catch (err) {
       next(err)
     }
   },
 
-  async deleteTask (req: Request, res: Response, next: NextFunction): Promise<void> {
+  async deleteTask (req: Request, res: Response, next: NextFunction): Promise<void | Response> {
     try {
-      await TaskModel.findByIdAndDelete(req.params.id)
-      res.status(204)
+      const task: Task | null = await TaskModel.findById(req.params.id).lean()
+      if (!task) {
+        return res.status(404).send({ message: 'task not found' })
+      }
+      await TaskModel.findByIdAndDelete(req.params.id).lean()
+      res.status(204).send()
     } catch (err) {
       next(err)
     }
