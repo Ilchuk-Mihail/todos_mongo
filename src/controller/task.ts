@@ -43,14 +43,14 @@ export default {
 
   async updateTask (req: Request, res: Response, next: NextFunction): Promise<void | Response> {
     try {
-      const { title, description } = req.body
+      const { title, description, status, importance } = req.body
       const task: Task | null = await TaskModel.findById(req.params.id).lean()
       if (!task) {
         return res.status(404).send({ message: 'task not found' })
       }
       const updatedTask: Task = await TaskModel.findOneAndUpdate(
         { _id: req.params.id },
-        { title: title, description: description },
+        { title: title, description: description, status: status, importance: importance },
         { new: true })
       res.status(200).send(updatedTask)
     } catch (err) {
@@ -58,16 +58,16 @@ export default {
     }
   },
 
-  async updateTaskStatusAndImportance (req: Request, res: Response, next: NextFunction): Promise<void | Response> {
+  async updateTaskPatch (req: Request, res: Response, next: NextFunction): Promise<void | Response> {
     try {
-      const { status, importance } = req.body
+      const { title, description, status, importance } = req.body
       const task: Task | null = await TaskModel.findById(req.params.id).lean()
       if (!task) {
         return res.status(404).send({ message: 'task not found' })
       }
       const updatedTask: Task = await TaskModel.findOneAndUpdate(
         { _id: req.params.id },
-        { status: status, importance: importance },
+        { title: title, description: description, status: status, importance: importance },
         { new: true }).lean()
       res.status(200).send(updatedTask)
     } catch (err) {
@@ -81,7 +81,7 @@ export default {
       if (!task) {
         return res.status(404).send({ message: 'task not found' })
       }
-      await TaskModel.findByIdAndDelete(req.params.id).lean()
+      await TaskModel.findByIdAndDelete(req.params.id)
       res.status(204).send()
     } catch (err) {
       next(err)
