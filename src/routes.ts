@@ -10,6 +10,7 @@ router.route('/tasks')
 router.route('/tasks/:id')
   .get(task.getTaskById)
   .put(task.updateTask)
+  .patch(task.updateTaskStatusAndImportance)
   .delete(task.deleteTask)
 
 export default router
