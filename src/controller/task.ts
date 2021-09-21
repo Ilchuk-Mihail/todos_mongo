@@ -19,16 +19,19 @@ export default {
 
   async getAllTasks (req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const limit = parseInt(<string>req.query.limit)
+      let limit = parseInt(<string>req.query.limit)
       const skip = parseInt(<string>req.query.skip)
-      const taskTotal: number = await TaskModel.countDocuments({})
-      const tasks: Task[] = await TaskModel.find({}).skip(skip).limit(limit).lean()
-      res.send({
-        tasks,
-        total: taskTotal,
-        limit: limit,
-        offset: skip
-      })
+      if (limit > 100) { limit = 100 }
+      const taskTotal: Promise<number> = TaskModel.countDocuments({}).exec()
+      const tasks: Promise<Task[]> = TaskModel.find({}).skip(skip).limit(limit).lean().exec()
+      await Promise.all([tasks, taskTotal]).then(([tasks, taskTotal]) =>
+        res.send({
+          tasks,
+          total: taskTotal,
+          limit: limit,
+          skip: skip
+        })
+      )
     } catch (err) {
       next(err)
     }
@@ -64,7 +67,7 @@ export default {
           title: title,
           updatedAt: new Date()
         },
-        { new: true }).lean()
+        { upsert: true }).lean()
 
       res.send(updatedTask)
     } catch (err) {
@@ -96,7 +99,7 @@ export default {
         return res.status(404).send({ message: 'task not found' })
       }
       await TaskModel.deleteOne({ _id: req.params.id })
-      res.status(204).send()
+      res.sendStatus(204)
     } catch (err) {
       next(err)
     }
