@@ -9,8 +9,8 @@ router.route('/tasks')
 
 router.route('/tasks/:id')
   .get(task.getTaskById)
-  .put(task.updateTask)
-  .patch(task.updateTaskPatch)
+  .put(task.replaceTask)
+  .patch(task.updateTask)
   .delete(task.deleteTask)
 
 export default router

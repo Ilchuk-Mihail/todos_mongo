@@ -1,11 +1,15 @@
 import { model, Schema } from 'mongoose'
 
 export enum TaskImportance {
-  LOW ='LOW', MEDIUM = 'MEDIUM', HIGH = 'HIGH'
+  LOW ='LOW',
+  MEDIUM = 'MEDIUM',
+  HIGH = 'HIGH'
 }
 
 export enum TaskStatus {
-  NOT_STARTED ='NOT_STARTED', IN_PROGRESS = 'IN_PROGRESS', COMPLETED = 'COMPLETED'
+  NOT_STARTED ='NOT_STARTED',
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED'
 }
 
 export interface Task {
@@ -14,7 +18,7 @@ export interface Task {
   description: string
   importance: TaskImportance
   status: TaskStatus
-  completedAt: Date
+  completedAt?: Date
   createdAt: Date
   updatedAt: Date
 }
@@ -40,7 +44,7 @@ const TaskSchema = new Schema({
     required: true,
     default: TaskStatus.NOT_STARTED
   },
-  completedAt: { type: Date, default: '' }
+  completedAt: { type: Date, default: null }
 }, {
   timestamps: true,
   collection: 'items'
