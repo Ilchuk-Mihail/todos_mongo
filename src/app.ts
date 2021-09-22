@@ -1,5 +1,5 @@
 import express, { Application } from 'express'
-import itemsRouter from './routes'
+import taskRouter from './routes'
 import db from './lib/db'
 import config from './config'
 
@@ -11,6 +11,6 @@ db.connection().catch(err => err)
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
-app.use('/', itemsRouter)
+app.use('/', taskRouter)
 
 app.listen(port)
