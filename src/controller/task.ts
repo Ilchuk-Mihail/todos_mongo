@@ -19,19 +19,24 @@ export default {
 
   async getAllTasks (req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      let limit = parseInt(<string>req.query.limit)
-      const skip = parseInt(<string>req.query.skip)
-      if (limit > 100) { limit = 100 }
-      const taskTotal: Promise<number> = TaskModel.countDocuments({}).exec()
-      const tasks: Promise<Task[]> = TaskModel.find({}).skip(skip).limit(limit).lean().exec()
-      await Promise.all([tasks, taskTotal]).then(([tasks, taskTotal]) =>
-        res.send({
-          tasks,
-          total: taskTotal,
-          limit: limit,
-          skip: skip
-        })
-      )
+      let limit = parseInt(req.query.limit as string) || 20
+      const skip = parseInt(req.query.skip as string) || 0
+      if (limit > 100) {
+        limit = 100
+      }
+      const [taskTotal, tasks] = await Promise.all([
+        TaskModel.countDocuments({}),
+        TaskModel.find({})
+          .skip(skip)
+          .limit(limit)
+          .lean()
+      ])
+      res.send({
+        tasks,
+        total: taskTotal,
+        limit: limit,
+        skip: skip
+      })
     } catch (err) {
       next(err)
     }
@@ -56,16 +61,13 @@ export default {
       if (!task) {
         return res.status(404).send({ message: 'task not found' })
       }
-      const updatedTask: Task = await TaskModel.findOneAndReplace(
+      const updatedTask = await TaskModel.findOneAndReplace(
         { _id: req.params.id },
         {
-          _id: req.params.id,
-          createdAt: new Date(),
-          description: description,
-          importance: importance,
-          status: status,
-          title: title,
-          updatedAt: new Date()
+          description,
+          importance,
+          status,
+          title
         },
         { upsert: true }).lean()
 
@@ -84,7 +86,12 @@ export default {
       }
       const updatedTask: Task = await TaskModel.findOneAndUpdate(
         { _id: req.params.id },
-        { title: title, description: description, status: status, importance: importance },
+        {
+          title,
+          description,
+          status,
+          importance
+        },
         { new: true }).lean()
       res.send(updatedTask)
     } catch (err) {

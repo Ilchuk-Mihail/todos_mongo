@@ -13,26 +13,25 @@ export enum TaskStatus {
 }
 
 export interface Task {
-  _id: string
+  _id?: string
   title: string
   description: string
   importance: TaskImportance
   status: TaskStatus
   completedAt?: Date
-  createdAt: Date
-  updatedAt: Date
+  createdAt?: Date
+  updatedAt?: Date
 }
 
 const TaskSchema = new Schema({
   title: { type: String, required: true },
-  description: { type: String, required: false },
+  description: { type: String },
   importance: {
     type: String,
     enum: {
       values: Object.values(TaskImportance),
       message: '{VALUE} is not supported'
     },
-    required: true,
     default: TaskImportance.LOW
   },
   status: {
@@ -41,7 +40,6 @@ const TaskSchema = new Schema({
       values: Object.values(TaskStatus),
       message: '{VALUE} is not supported'
     },
-    required: true,
     default: TaskStatus.NOT_STARTED
   },
   completedAt: { type: Date, default: null }
