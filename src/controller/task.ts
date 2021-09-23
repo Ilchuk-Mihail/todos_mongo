@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import TaskModel, { Task } from '../model/task'
-import HttpError from '../utils/HttpError'
+import { TaskNotFoundError } from '../errors/HttpErrors'
 
 export default {
   async createTask (req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -47,7 +47,7 @@ export default {
     try {
       const task: Task | null = await TaskModel.findById(req.params.id).lean()
       if (!task) {
-        return next(new HttpError(404, 'Task not found'))
+        return next(new TaskNotFoundError())
       }
       res.send(task)
     } catch (err) {
@@ -60,7 +60,7 @@ export default {
       const { title, description, status, importance } = req.body
       const task: Task | null = await TaskModel.findById(req.params.id).lean()
       if (!task) {
-        return next(new HttpError(404, 'Task not found'))
+        return next(new TaskNotFoundError())
       }
       const updatedTask = await TaskModel.findOneAndReplace(
         { _id: req.params.id },
@@ -83,7 +83,7 @@ export default {
       const { title, description, status, importance } = req.body
       const task: Task | null = await TaskModel.findById(req.params.id).lean()
       if (!task) {
-        return next(new HttpError(404, 'Task not found'))
+        return next(new TaskNotFoundError())
       }
       const updatedTask: Task = await TaskModel.findOneAndUpdate(
         { _id: req.params.id },
@@ -104,7 +104,7 @@ export default {
     try {
       const task: Task | null = await TaskModel.findById(req.params.id).lean()
       if (!task) {
-        return next(new HttpError(404, 'Task not found'))
+        return next(new TaskNotFoundError())
       }
       await TaskModel.deleteOne({ _id: req.params.id })
       res.sendStatus(204)

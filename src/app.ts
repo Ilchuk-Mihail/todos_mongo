@@ -2,7 +2,7 @@ import express, { Application } from 'express'
 import taskRouter from './routes'
 import db from './lib/db'
 import config from './config'
-import middleware from './middlewares/task'
+import errorHandler from './middlewares/errorHandler'
 
 const app: Application = express()
 const port = config.get('PORT')
@@ -14,6 +14,6 @@ app.use(express.urlencoded({ extended: false }))
 
 app.use('/', taskRouter)
 
-app.use(middleware.errorHandlerMiddleware)
+app.use(errorHandler)
 
 app.listen(port)
