@@ -1,7 +1,10 @@
 import express from 'express'
 import task from './controller/task'
+import taskMiddleware from './middlewares/task'
 
 const router = express.Router()
+
+router.param('id', taskMiddleware.checkIdValidity)
 
 router.route('/tasks')
   .post(task.createTask)
