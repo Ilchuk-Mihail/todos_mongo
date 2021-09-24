@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import TaskModel, { Task } from '../model/task'
+import { TaskNotFoundError } from '../errors/HttpErrors'
 
 export default {
   async createTask (req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -42,11 +43,11 @@ export default {
     }
   },
 
-  async getTaskById (req: Request, res: Response, next: NextFunction): Promise<void | Response> {
+  async getTaskById (req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const task: Task | null = await TaskModel.findById(req.params.id).lean()
       if (!task) {
-        return res.status(404).send({ message: 'task not found' })
+        throw new TaskNotFoundError()
       }
       res.send(task)
     } catch (err) {
@@ -54,12 +55,12 @@ export default {
     }
   },
 
-  async replaceTask (req: Request, res: Response, next: NextFunction): Promise<void | Response> {
+  async replaceTask (req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { title, description, status, importance } = req.body
       const task: Task | null = await TaskModel.findById(req.params.id).lean()
       if (!task) {
-        return res.status(404).send({ message: 'task not found' })
+        throw new TaskNotFoundError()
       }
       const updatedTask = await TaskModel.findOneAndReplace(
         { _id: req.params.id },
@@ -82,7 +83,7 @@ export default {
       const { title, description, status, importance } = req.body
       const task: Task | null = await TaskModel.findById(req.params.id).lean()
       if (!task) {
-        return res.status(404).send({ message: 'task not found' })
+        throw new TaskNotFoundError()
       }
       const updatedTask: Task = await TaskModel.findOneAndUpdate(
         { _id: req.params.id },
@@ -99,11 +100,11 @@ export default {
     }
   },
 
-  async deleteTask (req: Request, res: Response, next: NextFunction): Promise<void | Response> {
+  async deleteTask (req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const task: Task | null = await TaskModel.findById(req.params.id).lean()
       if (!task) {
-        return res.status(404).send({ message: 'task not found' })
+        throw new TaskNotFoundError()
       }
       await TaskModel.deleteOne({ _id: req.params.id })
       res.sendStatus(204)

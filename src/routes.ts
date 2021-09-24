@@ -1,7 +1,10 @@
 import express from 'express'
 import task from './controller/task'
+import checkIdValidity from './middlewares/checkIdValidity'
 
 const router = express.Router()
+
+router.param('id', checkIdValidity)
 
 router.route('/tasks')
   .post(task.createTask)
