@@ -43,11 +43,11 @@ export default {
     }
   },
 
-  async getTaskById (req: Request, res: Response, next: NextFunction): Promise<void | Response> {
+  async getTaskById (req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const task: Task | null = await TaskModel.findById(req.params.id).lean()
       if (!task) {
-        return next(new TaskNotFoundError())
+        throw new TaskNotFoundError()
       }
       res.send(task)
     } catch (err) {
@@ -55,12 +55,12 @@ export default {
     }
   },
 
-  async replaceTask (req: Request, res: Response, next: NextFunction): Promise<void | Response> {
+  async replaceTask (req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { title, description, status, importance } = req.body
       const task: Task | null = await TaskModel.findById(req.params.id).lean()
       if (!task) {
-        return next(new TaskNotFoundError())
+        throw new TaskNotFoundError()
       }
       const updatedTask = await TaskModel.findOneAndReplace(
         { _id: req.params.id },
@@ -83,7 +83,7 @@ export default {
       const { title, description, status, importance } = req.body
       const task: Task | null = await TaskModel.findById(req.params.id).lean()
       if (!task) {
-        return next(new TaskNotFoundError())
+        throw new TaskNotFoundError()
       }
       const updatedTask: Task = await TaskModel.findOneAndUpdate(
         { _id: req.params.id },
@@ -100,11 +100,11 @@ export default {
     }
   },
 
-  async deleteTask (req: Request, res: Response, next: NextFunction): Promise<void | Response> {
+  async deleteTask (req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const task: Task | null = await TaskModel.findById(req.params.id).lean()
       if (!task) {
-        return next(new TaskNotFoundError())
+        throw new TaskNotFoundError()
       }
       await TaskModel.deleteOne({ _id: req.params.id })
       res.sendStatus(204)

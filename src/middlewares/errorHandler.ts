@@ -5,7 +5,6 @@ export default function errorHandler (error: BaseError, req: Request, res: Respo
   const status = error.status || 500
   const message = error.message || 'Something went wrong '
   res.send({
-    status,
     message
   })
 }
