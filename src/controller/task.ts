@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import TaskModel, { Task } from '../model/task'
 import { TaskNotFoundError } from '../errors/HttpErrors'
+import logger from '../lib/logger'
 
 export default {
   async createTask (req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -12,6 +13,7 @@ export default {
         importance,
         status
       })
+      logger.info('Task created', { id: newTask._id })
       res.status(201).send(newTask)
     } catch (err) {
       next(err)
@@ -62,7 +64,7 @@ export default {
       if (!task) {
         throw new TaskNotFoundError()
       }
-      const updatedTask = await TaskModel.findOneAndReplace(
+      const updatedTask: Task = await TaskModel.findOneAndReplace(
         { _id: req.params.id },
         {
           description,
@@ -71,7 +73,7 @@ export default {
           title
         },
         { upsert: true }).lean()
-
+      logger.info('Task replaced', { task: updatedTask._id })
       res.send(updatedTask)
     } catch (err) {
       next(err)
@@ -94,6 +96,7 @@ export default {
           importance
         },
         { new: true }).lean()
+      logger.info('Task updated', { task: updatedTask._id })
       res.send(updatedTask)
     } catch (err) {
       next(err)
@@ -107,6 +110,7 @@ export default {
         throw new TaskNotFoundError()
       }
       await TaskModel.deleteOne({ _id: req.params.id })
+      logger.info('Task with id deleted', { task: task._id })
       res.sendStatus(204)
     } catch (err) {
       next(err)
