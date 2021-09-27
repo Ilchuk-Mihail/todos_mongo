@@ -1,4 +1,5 @@
 import winston from 'winston'
+import {mkdir} from "fs";
 
 const levels = {
   error: 0,
@@ -15,13 +16,13 @@ const format = winston.format.combine(
 
 const transports = [
   new winston.transports.Console({ format: winston.format.json() }),
-  new winston.transports.File({ filename: 'src/logs/all.log', format: winston.format.json() })
+  new winston.transports.File({ dirname: 'logs', filename: 'all.logs', format: winston.format.json() })
 ]
 
 const exceptionHandlers = [
-  new winston.transports.File({ filename: 'src/logs/all.log', format: winston.format.json() })
+  new winston.transports.File({ dirname: 'logs', filename: 'all.logs', format: winston.format.json() })
 ]
-
+// src/logs/all.log
 const Logger = winston.createLogger({
   levels,
   format,

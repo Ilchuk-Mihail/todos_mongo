@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import TaskModel, { Task } from '../model/task'
 import { TaskNotFoundError } from '../errors/HttpErrors'
-import Logger from '../lib/logger'
+import logger from '../lib/logger'
 
 export default {
   async createTask (req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -13,10 +13,7 @@ export default {
         importance,
         status
       })
-      Logger.info('Task created', {
-        id: newTask._id,
-        statusCode: res.statusCode
-      })
+      logger.info('Task created', { id: newTask._id })
       res.status(201).send(newTask)
     } catch (err) {
       next(err)
@@ -37,11 +34,6 @@ export default {
           .limit(limit)
           .lean()
       ])
-      Logger.info('Total number of tasks are', {
-        total: taskTotal,
-        statusCode: res.statusCode
-      })
-      Logger.info('Founded tasks', { tasks: Object.values(tasks) })
       res.send({
         tasks,
         total: taskTotal,
@@ -59,10 +51,6 @@ export default {
       if (!task) {
         throw new TaskNotFoundError()
       }
-      Logger.info('Task found', {
-        taskId: task,
-        statusCode: res.statusCode
-      })
       res.send(task)
     } catch (err) {
       next(err)
@@ -76,7 +64,7 @@ export default {
       if (!task) {
         throw new TaskNotFoundError()
       }
-      const updatedTask = await TaskModel.findOneAndReplace(
+      const updatedTask: Task = await TaskModel.findOneAndReplace(
         { _id: req.params.id },
         {
           description,
@@ -85,10 +73,7 @@ export default {
           title
         },
         { upsert: true }).lean()
-      Logger.info('Task replaced', {
-        task: updatedTask,
-        statusCode: res.statusCode
-      })
+      logger.info('Task replaced', { task: updatedTask._id })
       res.send(updatedTask)
     } catch (err) {
       next(err)
@@ -111,10 +96,7 @@ export default {
           importance
         },
         { new: true }).lean()
-      Logger.info('Task updated', {
-        task: updatedTask,
-        statusCode: res.statusCode
-      })
+      logger.info('Task updated', { task: updatedTask._id })
       res.send(updatedTask)
     } catch (err) {
       next(err)
@@ -128,10 +110,7 @@ export default {
         throw new TaskNotFoundError()
       }
       await TaskModel.deleteOne({ _id: req.params.id })
-      Logger.info('Task with id deleted', {
-        id: req.params.id,
-        statusCode: res.statusCode
-      })
+      logger.info('Task with id deleted', { task: task._id })
       res.sendStatus(204)
     } catch (err) {
       next(err)
