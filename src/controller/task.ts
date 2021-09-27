@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import TaskModel, { Task } from '../model/task'
 import { TaskNotFoundError } from '../errors/HttpErrors'
+import Logger from '../lib/logger'
 
 export default {
   async createTask (req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -11,6 +12,10 @@ export default {
         description,
         importance,
         status
+      })
+      Logger.info('Task created', {
+        id: newTask._id,
+        statusCode: res.statusCode
       })
       res.status(201).send(newTask)
     } catch (err) {
@@ -32,6 +37,11 @@ export default {
           .limit(limit)
           .lean()
       ])
+      Logger.info('Total number of tasks are', {
+        total: taskTotal,
+        statusCode: res.statusCode
+      })
+      Logger.info('Founded tasks', { tasks: Object.values(tasks) })
       res.send({
         tasks,
         total: taskTotal,
@@ -49,6 +59,10 @@ export default {
       if (!task) {
         throw new TaskNotFoundError()
       }
+      Logger.info('Task found', {
+        taskId: task,
+        statusCode: res.statusCode
+      })
       res.send(task)
     } catch (err) {
       next(err)
@@ -71,7 +85,10 @@ export default {
           title
         },
         { upsert: true }).lean()
-
+      Logger.info('Task replaced', {
+        task: updatedTask,
+        statusCode: res.statusCode
+      })
       res.send(updatedTask)
     } catch (err) {
       next(err)
@@ -94,6 +111,10 @@ export default {
           importance
         },
         { new: true }).lean()
+      Logger.info('Task updated', {
+        task: updatedTask,
+        statusCode: res.statusCode
+      })
       res.send(updatedTask)
     } catch (err) {
       next(err)
@@ -107,6 +128,10 @@ export default {
         throw new TaskNotFoundError()
       }
       await TaskModel.deleteOne({ _id: req.params.id })
+      Logger.info('Task with id deleted', {
+        id: req.params.id,
+        statusCode: res.statusCode
+      })
       res.sendStatus(204)
     } catch (err) {
       next(err)
