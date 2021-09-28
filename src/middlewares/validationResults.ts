@@ -6,7 +6,9 @@ import logger from '../lib/logger'
 import { ValidationError } from '../errors/HttpErrors'
 import BaseError from '../errors/BaseError'
 
-export default function validateRequest (input: any) {
+type SourceData = 'body' | 'query' | 'params'
+
+export default function validateRequest (input: any, source: SourceData) {
   return (req: Request, res: Response, next: NextFunction) => {
     // req[dynamicParams] = req.body
     // const data = req[dynamicParams]
@@ -18,9 +20,9 @@ export default function validateRequest (input: any) {
 
     //  dynamicParams: string[]
 
-    const data = req.body
-    data.id = req.params.id
-    const dtoObj = plainToClass(input, data)
+    // const data = req[source]
+    // data.id = req.params.id
+    const dtoObj = plainToClass(input, req[source])
 
     validate(dtoObj).then(errors => {
       if (errors.length > 0) {
@@ -30,6 +32,8 @@ export default function validateRequest (input: any) {
         })
         logger.info(message)
         logger.info('validation failed. errors: ', next(new BaseError(400, `Invalid value for property. details ${JSON.stringify(message)}`)))
+
+        // next(new ValidationError({ errors }))
       } else {
         logger.info('validation succeed')
         next()
@@ -37,3 +41,17 @@ export default function validateRequest (input: any) {
     })
   }
 }
+
+// const test = {
+//   prop1: 1,
+//   prop2 : 2
+// }
+
+// test.prop1 === test['prop1']
+
+// {
+//   'prop': ['email is valid', ''],
+//   'prop2': ['']
+// }
+
+// failedConstraints  []

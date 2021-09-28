@@ -23,13 +23,19 @@ export class CreateTaskDto {
 }
 
 export class UpdateTaskDto extends CreateTaskDto {
+  @IsOptional()
+  title!: string
+
+  @IsOptional()
+  description!: string
+}
+
+export class ReplaceTaskDto extends CreateTaskDto {}
+
+export class IdParam {
   @Expose()
   @IsMongoId({ message: 'invalid Id' })
   id!: string
 }
 
-export class GetDeleteTaskDto {
-  @Expose()
-  @IsMongoId({ message: 'test message' })
-  id!: string
-}
+export class GetDeleteTaskDto extends IdParam {}

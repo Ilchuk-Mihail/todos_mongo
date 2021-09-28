@@ -12,7 +12,7 @@ export class InvalidIdError extends BaseError {
   }
 }
 export class ValidationError extends BaseError {
-  constructor () {
-    super(400, 'Validation errorr')
+  constructor (meta: Record<string, unknown>) {
+    super(400, 'Validation errorr', meta)
   }
 }
