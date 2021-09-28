@@ -11,3 +11,8 @@ export class InvalidIdError extends BaseError {
     super(400, 'Invalid Id')
   }
 }
+export class ValidationError extends BaseError {
+  constructor () {
+    super(400, 'Validation errorr')
+  }
+}
