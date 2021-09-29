@@ -1,35 +1,23 @@
 import { Request, Response, NextFunction } from 'express'
-import { plainToClass } from 'class-transformer'
+import { ClassConstructor, plainToClass } from 'class-transformer'
 import { validate } from 'class-validator'
-import { CreateTaskDto } from '../dto/task.dto'
 import logger from '../lib/logger'
 import { ValidationError } from '../errors/HttpErrors'
-import BaseError from '../errors/BaseError'
+import { CreateTaskDto, ReplaceTaskDto, UpdateTaskDto, IdParam, GetDeleteTaskDto } from '../dto/task.dto'
 
-export default function validateRequest (input: any) {
-  return (req: Request, res: Response, next: NextFunction) => {
-    // req[dynamicParams] = req.body
-    // const data = req[dynamicParams]
-    // const body = req.body
-    // const param = req.params
-    // const dtoObj = plainToClass(CreateTaskDto, body)
-    // validate(dtoObj) // -> Validation Error
-    // next()
+type SourceData = 'body' | 'query' | 'params'
+type TaskDto = CreateTaskDto | UpdateTaskDto | ReplaceTaskDto | ReplaceTaskDto | IdParam | GetDeleteTaskDto
 
-    //  dynamicParams: string[]
-
-    const data = req.body
-    data.id = req.params.id
+export default function validateRequest (input: ClassConstructor<TaskDto>, source: SourceData) {
+  return (req: Request, res: Response, next: NextFunction): void => {
+    const data = req[source]
     const dtoObj = plainToClass(input, data)
-
     validate(dtoObj).then(errors => {
       if (errors.length > 0) {
-        logger.info('validation failed. errors: ', errors)
-        const message = errors.map(obj => {
-          return { value: obj.value, property: obj.property }
+        const constraints = errors.map(obj => {
+          return { constrains: obj.constraints }
         })
-        logger.info(message)
-        logger.info('validation failed. errors: ', next(new BaseError(400, `Invalid value for property. details ${JSON.stringify(message)}`)))
+        next(new ValidationError({ constraints }))
       } else {
         logger.info('validation succeed')
         next()
