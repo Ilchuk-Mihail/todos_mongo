@@ -32,4 +32,4 @@ export class IdParam {
   id!: string
 }
 
-export class GetDeleteTaskDto extends IdParam {}
+export class DeleteTaskDto extends IdParam {}
