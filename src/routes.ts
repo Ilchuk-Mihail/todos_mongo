@@ -1,19 +1,20 @@
 import express from 'express'
 import task from './controller/task'
-import checkIdValidity from './middlewares/checkIdValidity'
+import { CreateTaskDto, IdParam, UpdateTaskDto, ReplaceTaskDto } from './dto/task.dto'
+import validateRequest from './middlewares/validationResults'
 
 const router = express.Router()
 
-router.param('id', checkIdValidity)
-
 router.route('/tasks')
-  .post(task.createTask)
+  .post(validateRequest(CreateTaskDto, 'body'),
+    task.createTask)
   .get(task.getAllTasks)
 
 router.route('/tasks/:id')
+  .all(validateRequest(IdParam, 'params'))
   .get(task.getTaskById)
-  .put(task.replaceTask)
-  .patch(task.updateTask)
+  .put(validateRequest(ReplaceTaskDto, 'body'), task.replaceTask)
+  .patch(validateRequest(UpdateTaskDto, 'body'), task.updateTask)
   .delete(task.deleteTask)
 
 export default router
