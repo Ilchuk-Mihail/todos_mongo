@@ -1,9 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import { ClassConstructor, plainToClass } from 'class-transformer'
 import { validate } from 'class-validator'
-import logger from '../lib/logger'
 import { ValidationError } from '../errors/HttpErrors'
-import { CreateTaskDto, ReplaceTaskDto, UpdateTaskDto, IdParam, DeleteTaskDto } from '../dto/task.dto'
 
 type SourceData = 'body' | 'query' | 'params'
 

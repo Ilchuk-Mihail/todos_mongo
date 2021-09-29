@@ -7,12 +7,11 @@ export default function errorHandler (error: BaseError, req: Request, res: Respo
   const message = error.message || 'Something went wrong '
   const meta = error.meta || {}
 
-  logger.error(error.message,  {
+  logger.error(error.message, {
     ...meta,
     stack: error.stack
   })
-  res.statusCode = status
-  res.send({
+  res.status(status).send({
     message,
     ...meta
   })
