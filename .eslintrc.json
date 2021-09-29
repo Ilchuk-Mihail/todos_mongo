@@ -25,6 +25,13 @@
     "mocha": true
   },
   "rules": {
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_"
+      }
+    ],
     "@typescript-eslint/member-delimiter-style": [
       "error", {
         "multiline": {
