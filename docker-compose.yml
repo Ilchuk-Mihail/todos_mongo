@@ -1,0 +1,22 @@
+version: '3.4'
+
+services:
+  todosmongo:
+    build: .      
+    ports:
+     - "3000:3000"
+    volumes:
+     - ./:/app
+     - /app/node_modules
+
+  mongo:
+    image: mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin
+    volumes:
+      - mongo-db:/data/db
+
+volumes:
+ mongo-db:
+

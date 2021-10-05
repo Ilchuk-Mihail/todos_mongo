@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import TaskModel, { Task } from '../model/task'
+import TaskModel, { Task, TaskImportance, TaskStatus } from '../model/task'
 import { TaskNotFoundError } from '../errors/HttpErrors'
 import logger from '../lib/logger'
 
@@ -27,9 +27,14 @@ export default {
       if (limit > 100) {
         limit = 100
       }
+      const { importance, status } = req.query
+      const filter = {
+        ...importance && { importance: importance as TaskImportance },
+        ...status && { status: status as TaskStatus }
+      }
       const [taskTotal, tasks] = await Promise.all([
-        TaskModel.countDocuments({}),
-        TaskModel.find({})
+        TaskModel.countDocuments(filter),
+        TaskModel.find(filter)
           .skip(skip)
           .limit(limit)
           .lean()
@@ -37,8 +42,8 @@ export default {
       res.send({
         tasks,
         total: taskTotal,
-        limit: limit,
-        skip: skip
+        limit,
+        skip
       })
     } catch (err) {
       next(err)
@@ -72,7 +77,7 @@ export default {
           status,
           title
         },
-        { upsert: true }).lean()
+        { new: true }).lean()
       logger.info('Task replaced', { task: updatedTask._id })
       res.send(updatedTask)
     } catch (err) {

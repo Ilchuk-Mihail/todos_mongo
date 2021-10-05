@@ -1,6 +1,6 @@
 import express from 'express'
 import task from './controller/task'
-import { CreateTaskDto, IdParam, UpdateTaskDto, ReplaceTaskDto } from './dto/task.dto'
+import { CreateTaskDto, IdParam, UpdateTaskDto, ReplaceTaskDto, GetAllTaskDto } from './dto/task.dto'
 import validateRequest from './middlewares/validationResults'
 
 const router = express.Router()
@@ -8,7 +8,8 @@ const router = express.Router()
 router.route('/tasks')
   .post(validateRequest(CreateTaskDto, 'body'),
     task.createTask)
-  .get(task.getAllTasks)
+  .get(validateRequest(GetAllTaskDto, 'query'),
+    task.getAllTasks)
 
 router.route('/tasks/:id')
   .all(validateRequest(IdParam, 'params'))
