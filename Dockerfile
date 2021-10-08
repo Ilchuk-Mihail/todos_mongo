@@ -1,10 +1,7 @@
-FROM node:14-alpine
+FROM node:16.10.0-alpine
 WORKDIR /usr/src/app
-COPY package.json ./
-COPY tsconfig.json ./
-COPY . .
-RUN ls -a
+COPY package.json .
 RUN npm install
-RUN npm run build
-EXPOSE 3000
-CMD [ "node", "./dist/app.js" ]
+COPY tsconfig.json .
+COPY . .
+CMD [ "npm" ]

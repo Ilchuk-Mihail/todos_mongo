@@ -8,7 +8,7 @@ import app from '../app'
 const _server = app
 axios.defaults.baseURL = 'http://localhost:3000'
 
-const Tasks = {
+const testTask = {
   _id: '6148502fe5e1d14502694f42',
   description: 'test description',
   title: 'node js learning',
@@ -19,28 +19,30 @@ const Tasks = {
   createdAt: '2021-09-28T14:37:13.659Z'
 }
 
-const validId = Tasks._id
+const validId = testTask._id
 const invalidId = 777
 const nonExisted = '6148502fe5e1d14502694f56'
 
 describe('Tasks', () => {
-  describe('POST ', () => {
+  describe('POST /tasks ', () => {
     after('Delete test data', async () => {
       await TaskModel.deleteMany()
     })
-    it('should create a task', async () => {
+
+    it('should succeed - create a new task', async () => {
       const createTask = {
         title: 'title TEST AXIOUS',
         description: 'desc TEST AXIOUS'
       }
-      const response = await axios.post('/tasks', createTask)
-      expect(response.status).to.equal(201)
-      expect(response.data.title).to.equal(createTask.title)
-      expect(response.data.description).to.equal(createTask.description)
-      expect(response.data.status).to.equal('NOT_STARTED')
-      expect(response.data.importance).to.equal('LOW')
+      const { status, data } = await axios.post('/tasks', createTask)
+      expect(status).to.equal(201)
+      expect(data.title).to.equal(createTask.title)
+      expect(data.description).to.equal(createTask.description)
+      expect(data.status).to.equal('NOT_STARTED')
+      expect(data.importance).to.equal('LOW')
     })
-    it('should validate request body', async () => {
+
+    it('should fail - invalid request body', async () => {
       try {
         const invalidBodyTask = {
           title: 'title TEST AXIOUS',
@@ -54,35 +56,40 @@ describe('Tasks', () => {
         const { response: { status, data } } = err
         expect(status).to.equal(400)
         expect(data.message).to.equal('Validation error')
+        expect(data[0].isEnum).to.equal('importance must be a valid enum value')
+        expect(data[1].isEnum).to.equal('status must be a valid enum value')
       }
     })
   })
-  describe('GET ', () => {
+  describe('GET /tasks', () => {
     before('Prepare test data', async () => {
-      await TaskModel.create(Tasks)
+      await TaskModel.create(testTask)
     })
     after('Delete test data', async () => {
       await TaskModel.deleteMany()
     })
-    it('should get all tasks', async () => {
-      const response = await axios.get('/tasks')
-      expect(response.status).to.equal(200)
-      expect(response.data).to.be.a('object')
+
+    it('should succeed - get all task', async () => {
+      const { status, data } = await axios.get('/tasks')
+      expect(status).to.equal(200)
+      expect(data).to.be.a('object')
     })
   })
-  describe('GET by Id', () => {
+  describe('GET /tasks/:id', () => {
     before('Prepare test data', async () => {
-      await TaskModel.create(Tasks)
+      await TaskModel.create(testTask)
     })
     after('Delete test data', async () => {
       await TaskModel.deleteMany()
     })
-    it('should get tasks by id', async () => {
-      const response = await axios.get(`/tasks/${validId}`)
-      expect(response.status).to.equal(200)
-      expect(response.data).to.be.a('object')
+
+    it('should succeed - get task by id', async () => {
+      const { status, data } = await axios.get(`/tasks/${validId}`)
+      expect(status).to.equal(200)
+      expect(data).to.be.a('object')
     })
-    it('should return an error 400 for Invalid Id', async () => {
+
+    it('should fail - invalid id', async () => {
       try {
         await axios.get(`/tasks/${invalidId}`)
         expect.fail('call should have failed')
@@ -90,9 +97,11 @@ describe('Tasks', () => {
         const { response: { status, data } } = err
         expect(status).to.equal(400)
         expect(data.message).to.equal('Validation error')
+        expect(data[0].isMongoId).to.equal('invalid Id')
       }
     })
-    it('should return an error 404 for non-existent Id', async () => {
+
+    it('should fail - non-existent id', async () => {
       try {
         await axios.get(`/tasks/${nonExisted}`)
         expect.fail('call should have failed')
@@ -103,18 +112,20 @@ describe('Tasks', () => {
       }
     })
   })
-  describe('DELETE by Id', () => {
+  describe('DELETE /tasks/:id', () => {
     before('Prepare test data for', async () => {
-      await TaskModel.create(Tasks)
+      await TaskModel.create(testTask)
     })
     after('Delete test data', async () => {
       await TaskModel.deleteMany()
     })
-    it('should delete tasks by id', async () => {
-      const response = await axios.delete(`/tasks/${validId}`)
-      expect(response.status).to.equal(204)
+
+    it('should succeed - delete task by id', async () => {
+      const { status } = await axios.delete(`/tasks/${validId}`)
+      expect(status).to.equal(204)
     })
-    it('should return an error 404 for non-existent Id', async () => {
+
+    it('should fail - non-existent id', async () => {
       try {
         await axios.delete(`/tasks/${nonExisted}`)
         expect.fail('call should have failed')
@@ -124,7 +135,8 @@ describe('Tasks', () => {
         expect(data.message).to.equal('Task not found')
       }
     })
-    it('should return an error 400 for invalid Id', async () => {
+
+    it('should fail - invalid id', async () => {
       try {
         await axios.delete(`/tasks/${invalidId}`)
         expect.fail('call should have failed')
@@ -132,84 +144,96 @@ describe('Tasks', () => {
         const { response: { status, data } } = err
         expect(status).to.equal(400)
         expect(data.message).to.equal('Validation error')
+        expect(data[0].isMongoId).to.equal('invalid Id')
       }
     })
   })
-  describe('PUT', () => {
+  describe('PUT /tasks/:id', () => {
     before('Prepare test data for', async () => {
-      await TaskModel.create(Tasks)
+      await TaskModel.create(testTask)
     })
     after('Delete test data', async () => {
       await TaskModel.deleteMany()
     })
-    it('should replace a task', async () => {
-      const UpdateTask = {
+
+    it('should succeed - replace task by id', async () => {
+      const updateTask = {
         title: 'title TEST AXIOUS',
         description: 'desc TEST AXIOUS',
         status: 'IN_PROGRESS',
         importance: 'HIGH'
       }
-      const response = await axios.put(`/tasks/${validId}`, UpdateTask)
-      expect(response.status).to.equal(200)
-      expect(response.data.title).to.equal(UpdateTask.title)
-      expect(response.data.description).to.equal(UpdateTask.description)
-      expect(response.data.status).to.equal(UpdateTask.status)
-      expect(response.data.importance).to.equal(UpdateTask.importance)
+      const { status, data } = await axios.put(`/tasks/${validId}`, updateTask)
+      expect(status).to.equal(200)
+      expect(data.title).to.equal(updateTask.title)
+      expect(data.description).to.equal(updateTask.description)
+      expect(data.status).to.equal(updateTask.status)
+      expect(data.importance).to.equal(updateTask.importance)
     })
-    it('should return an error 400 for Invalid request body', async () => {
+
+    it('should fail - invalid request body', async () => {
       try {
-        const UpdateTaskInvalidBody = {
+        const updateTaskInvalidBody = {
           title: 33,
           description: '',
           status: 'NOT',
           importance: 'HIGHK'
         }
-        await axios.put(`/tasks/${validId}`, UpdateTaskInvalidBody)
+        await axios.put(`/tasks/${validId}`, updateTaskInvalidBody)
         expect.fail('call should have failed')
       } catch (err: any) {
         const { response: { status, data } } = err
         expect(status).to.equal(400)
         expect(data.message).to.equal('Validation error')
+        expect(data[0].isString).to.equal('title must be a string')
+        expect(data[1].minLength).to.equal('description must be longer than or equal to 1 characters')
+        expect(data[2].isEnum).to.equal('importance must be a valid enum value')
+        expect(data[3].isEnum).to.equal('status must be a valid enum value')
       }
     })
   })
-  describe('PATCH ', () => {
+  describe('PATCH /tasks/:id', () => {
     before('Prepare test data for', async () => {
-      await TaskModel.create(Tasks)
+      await TaskModel.create(testTask)
     })
     after('Delete test data', async () => {
       await TaskModel.deleteMany()
     })
-    it('should update a task', async () => {
-      const UpdateTask = {
+
+    it('should succeed - update task by id', async () => {
+      const updateTask = {
         title: 'title TEST AXIOUS',
         description: 'desc TEST AXIOUS',
         status: 'IN_PROGRESS',
         importance: 'HIGH'
       }
-      const response = await axios.patch(`/tasks/${validId}`, UpdateTask)
-      expect(response.status).to.equal(200)
-      expect(response.data.title).to.equal(UpdateTask.title)
-      expect(response.data.description).to.equal(UpdateTask.description)
-      expect(response.data.status).to.equal(UpdateTask.status)
-      expect(response.data.importance).to.equal(UpdateTask.importance)
+      const { status, data } = await axios.patch(`/tasks/${validId}`, updateTask)
+      expect(status).to.equal(200)
+      expect(data.title).to.equal(updateTask.title)
+      expect(data.description).to.equal(updateTask.description)
+      expect(data.status).to.equal(updateTask.status)
+      expect(data.importance).to.equal(updateTask.importance)
     })
-    it('should return an error 400 for Invalid request body', async () => {
+
+    it('should fail - invalid request body', async () => {
       try {
-        const UpdateTaskInvalidBody = {
+        const updateTaskInvalidBody = {
           title: 33,
           description: '',
           status: 'NOT',
           importance: 'HIGHK'
         }
-        await axios.patch(`/tasks/${validId}`, UpdateTaskInvalidBody)
+        await axios.patch(`/tasks/${validId}`, updateTaskInvalidBody)
         expect.fail('call should have failed')
       } catch (err: any) {
         const { response: { status, data } } = err
         expect(status).to.equal(400)
         expect(data.message).to.equal('Validation error')
+        expect(data[0].isString).to.equal('title must be a string')
+        expect(data[1].minLength).to.equal('description must be longer than or equal to 1 characters')
+        expect(data[2].isEnum).to.equal('importance must be a valid enum value')
+        expect(data[3].isEnum).to.equal('status must be a valid enum value')
       }
     })
   })
 })
-
