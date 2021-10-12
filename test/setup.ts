@@ -1,5 +1,4 @@
 // set env variables before everything
-process.env.ETCD_ENABLED = 'false'
 process.env.MONGODB_DATABASE = 'tasks-test'
 
 /* eslint-disable import/first */
