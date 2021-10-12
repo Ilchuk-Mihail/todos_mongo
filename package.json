@@ -6,7 +6,7 @@
     "prestart": "npm run build",
     "build": "tsc",
     "start": "node .",
-    "dev": "tsnd --respawn src/app.ts",
+    "dev": "ts-node-dev --respawn --transpile-only src/app.ts",
     "docker": "docker-compose -p todo up --no-recreate todo-api",
     "docker:build": "docker-compose -p todo rm -vfs todo-api && docker-compose -p todo build todo-api",
     "docker:test": "docker-compose -p todo run --rm todo-api npm run test",
