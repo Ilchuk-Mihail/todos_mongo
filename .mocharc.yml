@@ -1,0 +1,13 @@
+# async-only: true
+bail: true
+check-leaks: true
+delay: true
+exit: true
+recursive: true
+sort: true
+file: ./test/setup
+globals: ['classValidatorMetadataStorage']
+extension:
+  - ".spec.ts"
+require:
+  - "ts-node/register"
