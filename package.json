@@ -3,16 +3,20 @@
   "version": "1.0.0",
   "main": "dist/app.js",
   "scripts": {
-    "build": "tsc",
     "prestart": "npm run build",
+    "build": "tsc",
     "start": "node .",
     "dev": "tsnd --respawn src/app.ts",
+    "docker": "docker-compose -p todo up --no-recreate todo-api",
+    "docker:build": "docker-compose -p todo rm -vfs todo-api && docker-compose -p todo build todo-api",
+    "docker:test": "docker-compose -p todo run --rm todo-api npm run test",
+    "docker:debug": "docker-compose -p todo -f docker-compose.yml -f docker-compose.debug.yml run --rm --service-ports todo-api",
     "lint": "eslint . --ext .ts",
-    "test": "mocha -r ts-node/register 'src/**/*spec.ts' --exit",
+    "test": "NODE_ENV=test mocha ./src ./test",
     "coverage": "nyc npm run test -t ./.nyc-output report --reporter=html"
   },
   "keywords": [],
-  "author": "",
+  "author": "Vasyl Kushnir",
   "license": "ISC",
   "devDependencies": {
     "@types/chai": "^4.2.22",

@@ -1,0 +1,24 @@
+version: '3.7'
+
+services:
+  todo-api:
+    build: .
+    command: npm run dev
+    ports:
+     - 3000:3000
+    volumes:
+     - ./:/app
+     - /app/node_modules
+    depends_on:
+     - mongo
+
+  mongo:
+    image: mongo:5.0.3
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo-db:/data/db
+
+volumes:
+ mongo-db:

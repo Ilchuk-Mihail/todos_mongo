@@ -1,8 +1,2 @@
 {
-  "PORT": 3000,
-  "MONGODB_USER": "admin",
-  "MONGODB_PASSWORD": "admin",
-  "MONGODB_CONNECTION": "localhost",
-  "MONGODB_DATABASE": "tasks",
-  "MONGODB_DATABASE_TEST": "tasks-test"
 }

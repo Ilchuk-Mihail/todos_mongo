@@ -2,25 +2,5 @@ version: '3.7'
 
 services:
   todo-api:
-    build: .
-    command: npm start dev
-    ports:
-     - "3000:3000"
-     - "9229:9229"
-    volumes:
-     - ./:/app
-     - /app/node_modules
-    depends_on:
-     - mongo
-
-  mongo:
-    image: mongo:5.0.3
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=admin
-    volumes:
-      - mongo-db:/data/db
-
-volumes:
- mongo-db:
-
+      - MONGODB_CONNECTION=mongodb://mongo:27017/?retryWrites=true

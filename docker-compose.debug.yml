@@ -1,14 +1,7 @@
-version: '3.4'
+version: '3.7'
 
 services:
-  todosmongo:
-    image: todosmongo
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-    environment:
-      NODE_ENV: development
+  todo-api:
+    command: node --inspect-brk=0.0.0.0 .
     ports:
-      - 3000:3000
       - 9229:9229
-    command: ["node", "--inspect=0.0.0.0:9229", "dist/app.js"]

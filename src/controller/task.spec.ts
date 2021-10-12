@@ -2,11 +2,6 @@ import { expect } from 'chai'
 import { after, before, describe } from 'mocha'
 import TaskModel from '../model/task'
 import axios from 'axios'
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import app from '../app'
-
-const _server = app
-axios.defaults.baseURL = 'http://localhost:3000'
 
 const testTask = {
   _id: '6148502fe5e1d14502694f42',
