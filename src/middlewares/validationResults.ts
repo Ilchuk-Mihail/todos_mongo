@@ -11,8 +11,8 @@ export default function validateRequest (input: ClassConstructor<any>, source: S
     const dtoObj = plainToClass(input, data)
     validate(dtoObj).then(errors => {
       if (errors.length > 0) {
-        const constraints: any = Object.values(errors).flat()
-        next(new ValidationError({ constraints }))
+        const constraints : any = Object.values(errors).map(err => err.constraints)
+        next(new ValidationError(constraints))
       } else {
         next()
       }
