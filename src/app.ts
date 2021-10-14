@@ -5,14 +5,16 @@ import config from './config'
 import errorHandler from './middlewares/errorHandler'
 import logger from './lib/logger'
 import swaggerUI from 'swagger-ui-express'
-import YAML from 'yamljs'
+import openapi from 'openapi-comment-parser'
+import path from 'path'
 
 const app: Application = express()
 const port = config.get('PORT')
+const spec = openapi({ include: [path.resolve(__dirname, 'routes.ts'), path.join(__dirname,'openapi/todo.yml')] })
 
 db.connect()
 
-app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(YAML.load('swagger-config.yml')))
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(spec))
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))

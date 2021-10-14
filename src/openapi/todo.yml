@@ -1,0 +1,87 @@
+openapi: 3.0.0
+info:
+  title: Tasks API
+  description: A simple Tasks API
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+    description: Development server
+
+components:
+  schemas:
+    Task:
+      type: object
+      discriminator:
+        propertyName: taskType
+      properties:
+        id:
+          type: string
+          description: The auto-generated mongo id of the task
+        title:
+          type: string
+          description: The task title
+        description:
+          type: string
+          description: The task description
+        status:
+          type: string
+          enum: [ NOT_STARTED, IN_PROGRESS, COMPLETED ]
+          default: NOT_STARTED
+          description: The task status
+        importance:
+          type: string
+          enum: [ LOW, MEDIUM, HIGH ]
+          default: LOW
+          description: The task importance
+        createdAt:
+          type: Date
+          description: The auto-generated creation date
+        updatedAt:
+          type: Date
+          description: The auto-generated date when task is updated
+        completedAt:
+          type: Date
+          description: Task completion date
+          default: null
+      required:
+        - id
+        - title
+        - description
+        - status
+        - importance
+        - createdAt
+        - updatedAt
+      example:
+        id: 615dd91db28fc6609acdaf74
+        title: NODE JS AND TYPESCRIPT
+        description: NODE JS learning
+        status: NOT_STARTED
+        importance: LOW
+        createdAt: 2021-10-06T17:13:01.495Z
+        updatedAt: 2021-10-06T17:13:01.495Z
+        completedAt: null
+    CreateUpdateTask:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+        importance:
+          type: string
+    TasksResponse:
+      type: object
+      properties:
+        tasks:
+          type: Tasks
+        total:
+          type: number
+        limit:
+          type: number
+        skip:
+          type: number
+
+
+
