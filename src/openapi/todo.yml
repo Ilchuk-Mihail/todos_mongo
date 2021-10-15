@@ -82,10 +82,10 @@ components:
         application/json:
           schema:
             example:
-              title: string
-              description: string
-              status: string
-              importance: string
+              title: Node JS
+              description: Typescript
+              status: NOT_STARTED
+              importance: MEDIUM
             properties:
               title:
                 type: string
