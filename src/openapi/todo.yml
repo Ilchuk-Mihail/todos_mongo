@@ -77,10 +77,10 @@ components:
           type: number
   requestBodies:
     CreateUpdateBody:
-      type: object
       content:
         application/json:
           schema:
+            type: object
             example:
               title: Node JS
               description: Typescript
