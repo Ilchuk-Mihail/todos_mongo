@@ -19,32 +19,40 @@ components:
         id:
           type: string
           description: The auto-generated mongo id of the task
+          example: 615dd91db28fc6609acdaf74
         title:
           type: string
           description: The task title
+          example: NODE JS
         description:
           type: string
           description: The task description
+          example: AND TYPESCRIPT
         status:
           type: string
           enum: [ NOT_STARTED, IN_PROGRESS, COMPLETED ]
           default: NOT_STARTED
           description: The task status
+          example: IN_PROGRESS
         importance:
           type: string
           enum: [ LOW, MEDIUM, HIGH ]
           default: LOW
           description: The task importance
+          example: LOW
         createdAt:
           type: string
           description: The auto-generated creation date
+          example: 2021-10-06T17:13:01.495Z
         updatedAt:
           type: string
           description: The auto-generated date when task is updated
+          example: 2021-10-06T17:13:01.495Z
         completedAt:
           type: string
           description: Task completion date
           default: null
+          example: 2021-10-06T17:13:01.495Z
       required:
         - id
         - title
@@ -53,15 +61,7 @@ components:
         - importance
         - createdAt
         - updatedAt
-      example:
-        id: 615dd91db28fc6609acdaf74
-        title: NODE JS AND TYPESCRIPT
-        description: NODE JS learning
-        status: NOT_STARTED
-        importance: LOW
-        createdAt: 2021-10-06T17:13:01.495Z
-        updatedAt: 2021-10-06T17:13:01.495Z
-        completedAt: null
+
     TasksResponse:
       type: object
       properties:
@@ -103,3 +103,12 @@ components:
                 enum: [ LOW, MEDIUM, HIGH ]
                 default: LOW
                 description: The task importance
+  parameters:
+    taskId:
+      name: id
+      in: path
+      description: Task identifier
+      required: true
+      schema:
+        type: string
+        format: ObjectId

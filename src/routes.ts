@@ -41,7 +41,7 @@ router.route('/tasks/:id')
    * GET /tasks/{id}
    * @tag tasks
    * @summary Get task by id
-   * @pathParam {string} id - Mongo ID of the task to get.
+   * @paramComponent {taskId}
    * @response 200 - The list of the tasks
    * @responseContent {Task} 200.application/json
    * @response 400 - Invalid task id
@@ -53,7 +53,7 @@ router.route('/tasks/:id')
    * PUT /tasks/{id}
    * @tag tasks
    * @summary Replace task by id
-   * @pathParam {string} id - Mongo ID of the task to update
+   * @paramComponent {taskId}
    * @bodyComponent {CreateUpdateBody}
    * @bodyRequired
    * @response 200 - Task was updated
@@ -67,7 +67,7 @@ router.route('/tasks/:id')
    * PATCH /tasks/{id}
    * @tag tasks
    * @summary Update task by id
-   * @pathParam {string} id - Mongo ID of the task to update
+   * @paramComponent {taskId}
    * @bodyComponent {CreateUpdateBody}
    * @bodyRequired
    * @response 200 - Task was updated
@@ -81,7 +81,7 @@ router.route('/tasks/:id')
    * DELETE /tasks/{id}
    * @tag tasks
    * @summary Delete task by id
-   * @pathParam {string} id - Mongo ID of the task to delete.
+   * @paramComponent {taskId}
    * @response 204 - No content
    * @response 400 - Invalid task id
    * @response 404 - Task not found
