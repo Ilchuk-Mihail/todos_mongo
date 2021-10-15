@@ -6,10 +6,12 @@ import validateRequest from './middlewares/validationResults'
 const router = express.Router()
 
 router.route('/tasks')
+
   /**
    * POST /tasks
+   * @tag tasks
    * @summary Creates a task.
-   * @bodyContent {CreateUpdateTask} application/json
+   * @bodyComponent {CreateUpdateBody}
    * @bodyRequired
    * @response 201 - Created
    * @responseContent {Task} 201.application/json
@@ -17,8 +19,10 @@ router.route('/tasks')
    */
   .post(validateRequest(CreateTaskDto, 'body'),
     task.createTask)
+
   /**
    * GET /tasks
+   * @tag tasks
    * @summary Get all tasks
    * @queryParam {integer} [skip=0] - The number of items to skip before starting to collect the result
    * @queryParam {integer} [limit=20] - The numbers of items to return
@@ -32,21 +36,25 @@ router.route('/tasks')
 
 router.route('/tasks/:id')
   .all(validateRequest(IdParam, 'params'))
+
   /**
-   * GET /tasks/{taskId}
+   * GET /tasks/{id}
+   * @tag tasks
    * @summary Get task by id
-   * @pathParam {string} taskId - Mongo ID of the task to get.
+   * @pathParam {string} id - Mongo ID of the task to get.
    * @response 200 - The list of the tasks
    * @responseContent {Task} 200.application/json
    * @response 400 - Invalid task id
    * @response 404 - Task not found
    */
   .get(task.getTaskById)
+
   /**
-   * PUT /tasks/{taskId}
+   * PUT /tasks/{id}
+   * @tag tasks
    * @summary Replace task by id
-   * @pathParam {string} taskId - Mongo ID of the task to update
-   * @bodyContent {CreateUpdateTask} application/json
+   * @pathParam {string} id - Mongo ID of the task to update
+   * @bodyComponent {CreateUpdateBody}
    * @bodyRequired
    * @response 200 - Task was updated
    * @responseContent {Task} 200.application/json
@@ -54,11 +62,13 @@ router.route('/tasks/:id')
    * @response 404 - Task not found
    */
   .put(validateRequest(ReplaceTaskDto, 'body'), task.replaceTask)
+
   /**
-   * PATCH /tasks/{taskId}
+   * PATCH /tasks/{id}
+   * @tag tasks
    * @summary Update task by id
-   * @pathParam {string} taskId - Mongo ID of the task to update
-   * @bodyContent {CreateUpdateTask} application/json
+   * @pathParam {string} id - Mongo ID of the task to update
+   * @bodyComponent {CreateUpdateBody}
    * @bodyRequired
    * @response 200 - Task was updated
    * @responseContent {Task} 200.application/json
@@ -66,12 +76,13 @@ router.route('/tasks/:id')
    * @response 404 - Task not found
    */
   .patch(validateRequest(UpdateTaskDto, 'body'), task.updateTask)
+
   /**
-   * DELETE /tasks/{taskId}
+   * DELETE /tasks/{id}
+   * @tag tasks
    * @summary Delete task by id
-   * @pathParam {string} taskId - Mongo ID of the task to delete.
+   * @pathParam {string} id - Mongo ID of the task to delete.
    * @response 204 - No content
-   * @responseContent 204.application/json
    * @response 400 - Invalid task id
    * @response 404 - Task not found
    */

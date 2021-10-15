@@ -1,4 +1,4 @@
-import {IsString, IsEnum, IsOptional, IsMongoId, IsNumberString, MinLength, MaxLength} from 'class-validator'
+import { IsString, IsEnum, IsOptional, IsMongoId, IsNumberString, MinLength, MaxLength } from 'class-validator'
 import { TaskImportance, TaskStatus } from '../model/task'
 
 export class CreateTaskDto {

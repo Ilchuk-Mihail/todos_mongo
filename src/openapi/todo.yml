@@ -6,6 +6,8 @@ info:
 servers:
   - url: http://localhost:3000
     description: Development server
+tags:
+  - name: "tasks"
 
 components:
   schemas:
@@ -34,13 +36,13 @@ components:
           default: LOW
           description: The task importance
         createdAt:
-          type: Date
+          type: string
           description: The auto-generated creation date
         updatedAt:
-          type: Date
+          type: string
           description: The auto-generated date when task is updated
         completedAt:
-          type: Date
+          type: string
           description: Task completion date
           default: null
       required:
@@ -60,28 +62,44 @@ components:
         createdAt: 2021-10-06T17:13:01.495Z
         updatedAt: 2021-10-06T17:13:01.495Z
         completedAt: null
-    CreateUpdateTask:
-      type: object
-      properties:
-        title:
-          type: string
-        description:
-          type: string
-        status:
-          type: string
-        importance:
-          type: string
     TasksResponse:
       type: object
       properties:
         tasks:
-          type: Tasks
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
         total:
           type: number
         limit:
           type: number
         skip:
           type: number
-
-
-
+  requestBodies:
+    CreateUpdateBody:
+      type: object
+      content:
+        application/json:
+          schema:
+            example:
+              title: string
+              description: string
+              status: string
+              importance: string
+            properties:
+              title:
+                type: string
+                description: The task title
+              description:
+                type: string
+                description: The task description
+              status:
+                type: string
+                enum: [ NOT_STARTED, IN_PROGRESS, COMPLETED ]
+                default: NOT_STARTED
+                description: The task status
+              importance:
+                type: string
+                enum: [ LOW, MEDIUM, HIGH ]
+                default: LOW
+                description: The task importance

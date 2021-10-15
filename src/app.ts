@@ -10,7 +10,7 @@ import path from 'path'
 
 const app: Application = express()
 const port = config.get('PORT')
-const spec = openapi({ include: [path.resolve(__dirname, 'routes.ts'), path.join(__dirname,'openapi/todo.yml')] })
+const spec = openapi({ include: [path.resolve(__dirname, 'routes.ts'), path.join(__dirname, 'openapi/todo.yml')] })
 
 db.connect()
 
