@@ -51,8 +51,7 @@ describe('Tasks', () => {
         const { response: { status, data } } = err
         expect(status).to.equal(400)
         expect(data.message).to.equal('Validation error')
-        expect(data.validationErrors).to.contain('importance must be a valid enum value')
-        expect(data.validationErrors).to.contain('status must be a valid enum value')
+        expect(data.validationErrors).to.be.an('array').deep.equal(['importance must be a valid enum value', 'status must be a valid enum value'])
       }
     })
   })
@@ -92,7 +91,7 @@ describe('Tasks', () => {
         const { response: { status, data } } = err
         expect(status).to.equal(400)
         expect(data.message).to.equal('Validation error')
-        expect(data.validationErrors).to.contain('invalid Id')
+        expect(data.validationErrors).to.be.an('array').deep.equal(['invalid Id'])
       }
     })
 
@@ -139,7 +138,7 @@ describe('Tasks', () => {
         const { response: { status, data } } = err
         expect(status).to.equal(400)
         expect(data.message).to.equal('Validation error')
-        expect(data.validationErrors).to.contain('invalid Id')
+        expect(data.validationErrors).to.be.an('array').deep.equal(['invalid Id'])
       }
     })
   })
@@ -180,10 +179,12 @@ describe('Tasks', () => {
         const { response: { status, data } } = err
         expect(status).to.equal(400)
         expect(data.message).to.equal('Validation error')
-        expect(data.validationErrors).to.contain('title must be a string')
-        expect(data.validationErrors).to.contain('description must be longer than or equal to 1 characters')
-        expect(data.validationErrors).to.contain('importance must be a valid enum value')
-        expect(data.validationErrors).to.contain('status must be a valid enum value')
+        expect(data.validationErrors).to.be.an('array').deep.equal([
+          'title must be longer than or equal to 1 characters',
+          'title must be a string',
+          'description must be longer than or equal to 1 characters',
+          'importance must be a valid enum value',
+          'status must be a valid enum value'])
       }
     })
   })
@@ -224,10 +225,12 @@ describe('Tasks', () => {
         const { response: { status, data } } = err
         expect(status).to.equal(400)
         expect(data.message).to.equal('Validation error')
-        expect(data.validationErrors).to.contain('title must be a string')
-        expect(data.validationErrors).to.contain('description must be longer than or equal to 1 characters')
-        expect(data.validationErrors).to.contain('importance must be a valid enum value')
-        expect(data.validationErrors).to.contain('status must be a valid enum value')
+        expect(data.validationErrors).to.be.an('array').deep.equal([
+          'title must be longer than or equal to 1 characters',
+          'title must be a string',
+          'description must be longer than or equal to 1 characters',
+          'importance must be a valid enum value',
+          'status must be a valid enum value'])
       }
     })
   })

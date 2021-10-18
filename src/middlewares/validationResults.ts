@@ -14,7 +14,10 @@ export default function validateRequest (input: ClassConstructor<any>, source: S
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         const constraints : any = Object.values(errors).map(err => Object.values(err.constraints)).flat()
-        next(new ValidationError(constraints))
+        const validationErrors = {
+          validationErrors: Object.values(constraints)
+        }
+        next(new ValidationError(validationErrors))
       } else {
         next()
       }
