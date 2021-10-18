@@ -11,8 +11,13 @@ export default function validateRequest (input: ClassConstructor<any>, source: S
     const dtoObj = plainToClass(input, data)
     validate(dtoObj).then(errors => {
       if (errors.length > 0) {
-        const constraints : any = Object.values(errors).map(err => err.constraints)
-        next(new ValidationError(constraints))
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        const constraints : any = Object.values(errors).map(err => Object.values(err.constraints)).flat()
+        const validationErrors = {
+          validationErrors: Object.values(constraints)
+        }
+        next(new ValidationError(validationErrors))
       } else {
         next()
       }
