@@ -1,6 +1,6 @@
 # async-only: true
 bail: true
-check-leaks: true
+check-leaks: false
 delay: true
 exit: true
 recursive: true
