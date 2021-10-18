@@ -73,16 +73,13 @@ To run project locally ,you need to install:
 
 ## Scripts
 
-    "prestart": "npm run build",
-    "build": "tsc",
-    "start": "node .",
-    "dev": "ts-node-dev --respawn --transpile-only src/app.ts",
-    "docker": "docker-compose -p todo up --no-recreate todo-api",
-    "docker:build": "docker-compose -p todo rm -vfs todo-api && docker-compose -p todo build todo-api",
-    "docker:test": "docker-compose -p todo run --rm todo-api npm run test",
-    "docker:debug": "docker-compose -p todo -f docker-compose.yml -f docker-compose.debug.yml run --rm --service-ports todo-api",
-    "lint": "eslint . --ext .ts",
-    "test": "NODE_ENV=test mocha ./src ./test",
-    "coverage": "nyc npm run test -t ./.nyc-output report --reporter=html"
+    "dev": "Runs app locally",
+    "docker": "Runs app in docker",
+    "docker:build": "Builds docker containers",
+    "docker:test": "Runs test in docker container",
+    "docker:debug": "Runs docker in debug mode",
+    "lint": "Runs linter",
+    "test": "Runs test",
+    "coverage": "Runs test and generate a index.html document with information about coverage"
     
 
