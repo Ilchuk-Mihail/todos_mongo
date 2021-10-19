@@ -14,5 +14,5 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Build the Docker image
-      run: docker-compose up --exit-code-from todo-api todo-api
+    - name: Build the docker-compose stack
+      run: docker-compose -f docker-compose.yml -f docker-compose.github.yml up --exit-code-from todo-api todo-api
