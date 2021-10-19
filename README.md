@@ -1,85 +1,116 @@
-# TODO project
-API for TODO list
----
-## Content:
-  - [Tech stack](#tech-stack)
-  - [Requirements](#requirements)
-  - [Install project](#install-project)
-  - [Running the project](#running-the-project)
-    - [Start server](#to-start-server-on-your-computer)
-    - [Run tests](#to-run-tests)
-    - [Run tests with coverage](#to-run-tests-with-coverage-report)
-  - [Documentation - OPEN API(Swagger)](#documentation)
-  - [Running the project in Docker](#running-the-project-in-docker)
-    - [Start server](#to-start-server)
-    - [Run tests](#to-run-test)
-    - [Run debug](#to-run-debug)
-  - [Scripts](#scripts)
+# TODO
 
-## Tech stack
+[![javascript style guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+
+* [Overview](#overview)
+* [Installation](#installation)
+* [Dev dependencies](#dev-dependencies)
+* [How do I startup?](#how-do-i-startup)
+* [How do I test?](#how-do-i-test)
+* [Scripts](#scripts)
+* [Code style](#code-style)
+* [Config](#config)
+* [Endpoints](#openapi-documentation)
+
+<a name="overview"></a>
+## Overview
+Simple todo list implementation. TBD.
+
+### Tech stack
 - NodeJS (Express)
 - Typescript
 - Mongo DB
 - Docker
 
-## Requirements
+## Installation
+Simply clone the repo and verify that you have satisfied the [dev dependencies](#dev-dependencies).
 
-To run project locally ,you need to install:
-- NodeJS and npm
-- Git
-- Docker and Docker-compose (to run project using Docker)
-- Mongo DB 
+```bash
+git clone https://github.com/vasylkushnir/todos_mongo.git
+cd todos_mongo
+npm install
+npm i
+```
 
-## Install project
+<a name="dev-dependencies"></a>
+## Dev dependencies
 
-    $ git clone https://github.com/vasylkushnir/todos_mongo.git
-    $ cd todos_mongo
-    $ npm install
+### Docker
 
-## Running the project
-- run Mongo DB on you computer
-### To start server on your computer:
+All local development is containerized, so all you need is [Docker Desktop](https://www.docker.com/products/docker-desktop) to get going.
 
-    $ npm run dev
+### Node.js
+Recommended so you can [lint](https://eslint.org) on your host machine and run project without docker if you need.
 
-### To run tests:
+```bash
+brew update
+brew install node@16
+node -v
+```
 
-    $ npm run test
+<a name="how-do-i-startup"></a>
+## How do I startup?
 
-### To run tests with coverage report
+Make sure you have all the [dev dependencies](#dev-dependencies) installed and running. Any code changes you make to your local repo will be reflected within the container itself. This does **NOT** include changes to dependencies. Code changes cause the service to be auto-restarted (utilizes [nodemon](https://nodemon.io) within the container).
 
-    $ npm run coverage
+```bash
+npm run docker
+```
 
-- report will be generated and could be found in coverage folder -> index.html
+If you've modified any dependencies or the service `Dockerfile`, make sure you run the build command and recreate your service containers.
 
-## Documentation
-- run server and open URL:
-   
-    $ http://localhost:3000/api-docs/#/
+```bash
+npm run docker:build
+npm run docker
+```
 
-## Running the project in Docker
-- run Docker-compose on your computer
-### To start server
+<a name="how-do-i-test"></a>
+## How do I test?
 
-    $ npm run docker
+To run the test suite, first install the dependencies, then:
 
-### To run tests:
+```bash
+npm run docker:test
+```
 
-    $ npm run docker:test
+It will monitor file changes and re-run the test suites on every save using *nodemon*.
 
-### To run debug
 
-    $ npm run docker:debug
+```bash
+npm run docker:test:cov
+```
+
+That will run the test suite and also give you detailed info about **code coverage**.
+
 
 ## Scripts
 
-    "dev": "Runs app locally",
-    "docker": "Runs app in docker",
-    "docker:build": "Builds docker containers",
-    "docker:test": "Runs test in docker container",
-    "docker:debug": "Runs docker in debug mode",
-    "lint": "Runs linter",
-    "test": "Runs test",
-    "coverage": "Runs test and generate a index.html document with information about coverage"
-    
+Available package scripts and the operatives they execute on:
 
+- `build` - Compiles typescript files
+- `dev` - Runs project locally
+- `docker` - Runs project within docker container with all dependencies
+- `docker:build` - Builds docker containers
+- `docker:test` -  Runs tests within docker container in file watch mode
+- `docker:test:cov` - Runs the npm test command within docker container and outputs a code coverage report
+- `lint` - Using eslint, verify files are syntactically formatted correct
+- `style-fix` - Automation to resolve most all syntax formatting issues
+- `test:watch` - Run tests locally in file watch mode
+- `test` - Run an instance of this projects entire testing framework including code coverage output
+
+
+## Code style
+This project follows [StandardJS](https://standardjs.com) coding style. I uses eslint to enforce standard style. Use `lint` and `style-fix` commands to check/fix project codebase.
+
+<a name="config"></a>
+## Config
+There are various configuration settings predefined in the `./src/config` folder.
+
+## OpenAPI documentation
+
+Service documented with [OpenAPI Specification](https://swagger.io/docs/specification/about/) (formerly Swagger Specification) is an API description format for REST APIs.
+
+To check the endpoints run the project and follow the link:
+```
+http://localhost:3000/api-docs
+```
