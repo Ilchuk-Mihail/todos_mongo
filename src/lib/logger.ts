@@ -1,5 +1,4 @@
 import winston from 'winston'
-import {mkdir} from "fs";
 
 const levels = {
   error: 0,
