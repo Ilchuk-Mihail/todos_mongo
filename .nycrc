@@ -1,0 +1,10 @@
+{
+  "exclude": [
+    "test/*",
+    "src/**/*.spec*.ts"
+  ],
+  "reporter": [
+    "text",
+    "lcov"
+  ]
+}

@@ -9,11 +9,13 @@
     "dev": "ts-node-dev --respawn --transpile-only src/app.ts",
     "docker": "docker-compose -p todo up --no-recreate todo-api",
     "docker:build": "docker-compose -p todo rm -vfs todo-api && docker-compose -p todo build todo-api",
-    "docker:test": "docker-compose -p todo run --rm todo-api npm run test",
+    "docker:test": "docker-compose -p todo run --rm todo-api npm run test:watch",
+    "docker:test:cov": "docker-compose -p todo run --rm todo-api npm t",
     "docker:debug": "docker-compose -p todo -f docker-compose.yml -f docker-compose.debug.yml run --rm --service-ports todo-api",
     "lint": "eslint . --ext .ts",
-    "test": "NODE_ENV=test mocha ./src ./test",
-    "coverage": "nyc npm run test -t ./.nyc-output report --reporter=html"
+    "style-fix": "npm run lint -- --fix",
+    "test": "NODE_ENV=test nyc mocha ./src ./test",
+    "test:watch": "nodemon -x 'NODE_ENV=test mocha ./src ./test'"
   },
   "keywords": [],
   "author": "Vasyl Kushnir",
