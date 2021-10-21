@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -35,6 +35,11 @@ jobs:
       with:
         mongodb-version: ${{ matrix.mongodb-version }}
 
-    - run: npm install
+    # Install npm dependencies
+    - run: npm ci
 
-    - run: npm test
+    # Run lint
+    - run: npm run lint
+
+    # Run tests
+    - run: npm run test:github
