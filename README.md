@@ -1,6 +1,8 @@
 # TODO
 
 [![javascript style guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+![example workflow](https://github.com/vasylkushnir/todos_mongo/actions/workflows/node.js.yml/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/vasylkushnir/todos_mongo/badge.svg?branch=master)](https://coveralls.io/github/vasylkushnir/todos_mongo?branch=master)
 
 * [Overview](#overview)
 * [Installation](#installation)
