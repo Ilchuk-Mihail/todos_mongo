@@ -1,6 +1,7 @@
 # TODO
 
 [![javascript style guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+![example workflow](https://github.com/vasylkushnir/todos_mongo/actions/workflows/node.js.yml/badge.svg)
 
 * [Overview](#overview)
 * [Installation](#installation)
